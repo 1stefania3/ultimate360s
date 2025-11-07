@@ -1,0 +1,71 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+// Importa tus pantallas
+import 'screens/index.dart';
+import 'screens/login.dart';
+import 'screens/register.dart';
+import 'screens/home.dart'; // <-- Asegúrate que el archivo exista y la ruta sea correcta
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  // Inicializa Firebase
+  Future<FirebaseApp> _initializeFirebase() async {
+    return await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: _initializeFirebase(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          return MaterialApp(
+            title: 'Ultimate360s',
+            debugShowCheckedModeBanner: false,
+            theme: ThemeData(
+              primarySwatch: Colors.blue,
+              fontFamily: 'Montserrat', // Aplica Montserrat en toda la app
+            ),
+            // Pantalla inicial
+            home: const IndexScreen(),
+            // Rutas con nombre
+            routes: {
+              '/login': (context) => const LoginScreen(),
+              '/register': (context) => const RegisterScreen(),
+              '/home': (context) => HomeScreen(), // <-- No usar const porque HomeScreen tiene widgets dinámicos
+              '/index': (context) => const IndexScreen(),
+            },
+          );
+        }
+
+        if (snapshot.hasError) {
+          return MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Text('Error initializing Firebase: ${snapshot.error}'),
+              ),
+            ),
+          );
+        }
+
+        // Mientras se inicializa Firebase
+        return const MaterialApp(
+          home: Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

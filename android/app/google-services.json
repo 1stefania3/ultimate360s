@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "612372132799",
+    "project_id": "ultimate360s",
+    "storage_bucket": "ultimate360s.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:612372132799:android:2a06bb00ffb9740a11670a",
+        "android_client_info": {
+          "package_name": "com.example.ultimate360s"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBO4roLsHi3zOqN5B4HC5SPcG-sjLNlPl4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
