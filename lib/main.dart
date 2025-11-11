@@ -6,7 +6,9 @@ import 'firebase_options.dart';
 import 'screens/index.dart';
 import 'screens/login.dart';
 import 'screens/register.dart';
-import 'screens/home.dart'; // <-- Asegúrate que el archivo exista y la ruta sea correcta
+import 'screens/home.dart';
+import 'screens/welcome_screen.dart'; // 👈 NUEVA PANTALLA Red 360
+import 'screens/feed_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,14 +37,18 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue,
               fontFamily: 'Montserrat', // Aplica Montserrat en toda la app
             ),
-            // Pantalla inicial
+            // 👇 Pantalla inicial actual
             home: const IndexScreen(),
-            // Rutas con nombre
+            // 👇 Rutas con nombre
             routes: {
               '/login': (context) => const LoginScreen(),
               '/register': (context) => const RegisterScreen(),
-              '/home': (context) => HomeScreen(), // <-- No usar const porque HomeScreen tiene widgets dinámicos
+              '/home': (context) => HomeScreen(),
               '/index': (context) => const IndexScreen(),
+              '/welcome': (context) => const WelcomeScreen(), 
+              '/feed': (context) => FeedPage(),
+
+
             },
           );
         }

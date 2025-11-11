@@ -72,7 +72,8 @@ class HomeScreen extends StatelessWidget {
                             label: "Conectar",
                             color: primaryRed,
                             onTap: () {
-                              // Acción conectar
+                              // 👇 Navega a la pantalla Welcome (Red 360)
+                              Navigator.pushNamed(context, '/welcome');
                             },
                           ),
                           _buildHomeButton(
