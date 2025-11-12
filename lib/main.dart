@@ -7,6 +7,7 @@ import 'screens/index.dart';
 import 'screens/login.dart';
 import 'screens/register.dart';
 import 'screens/home.dart'; // <-- Asegúrate que el archivo exista y la ruta sea correcta
+import 'screens/maps.dart';
 
 void main() {
   runApp(const MyApp());
@@ -43,6 +44,7 @@ class MyApp extends StatelessWidget {
               '/register': (context) => const RegisterScreen(),
               '/home': (context) => HomeScreen(), // <-- No usar const porque HomeScreen tiene widgets dinámicos
               '/index': (context) => const IndexScreen(),
+              'maps': (context) => const MapsPage(),
             },
           );
         }
