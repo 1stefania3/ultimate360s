@@ -25,9 +25,6 @@ class _FeedPageState extends State<FeedPage> {
   bool _isUploading = false;
   String? _imageBase64;
   String _searchQuery = '';
-  bool _showSearchResults = false;
-  String? _selectedUserId;
-  String? _selectedUserName;
 
   @override
   void initState() {
@@ -35,11 +32,6 @@ class _FeedPageState extends State<FeedPage> {
     _searchController.addListener(() {
       setState(() {
         _searchQuery = _searchController.text.toLowerCase().trim();
-        _showSearchResults = _searchQuery.isNotEmpty;
-        if (_searchQuery.isEmpty) {
-          _selectedUserId = null;
-          _selectedUserName = null;
-        }
       });
     });
   }
@@ -163,23 +155,47 @@ class _FeedPageState extends State<FeedPage> {
                               final userImage = userData?['imageBase64'];
                               
                               return ListTile(
-                                leading: CircleAvatar(
-                                  backgroundColor: Colors.grey[600],
-                                  backgroundImage: userImage != null
-                                      ? MemoryImage(base64Decode(userImage))
-                                      : null,
-                                  child: userImage == null
-                                      ? Text(
-                                          userName[0].toUpperCase(),
-                                          style: const TextStyle(color: Colors.white),
-                                        )
-                                      : null,
+                                leading: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/perfil',
+                                      arguments: {
+                                        'userId': userId,
+                                        'userName': userName,
+                                      },
+                                    );
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.grey[600],
+                                    backgroundImage: userImage != null
+                                        ? MemoryImage(base64Decode(userImage))
+                                        : null,
+                                    child: userImage == null
+                                        ? Text(
+                                            userName[0].toUpperCase(),
+                                            style: const TextStyle(color: Colors.white),
+                                          )
+                                        : null,
+                                  ),
                                 ),
-                                title: Text(
-                                  userName,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                                title: GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/perfil',
+                                      arguments: {
+                                        'userId': userId,
+                                        'userName': userName,
+                                      },
+                                    );
+                                  },
+                                  child: Text(
+                                    userName,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               );
@@ -270,23 +286,47 @@ class _FeedPageState extends State<FeedPage> {
                         final username = data['username'] ?? 'Usuario';
                         
                         return ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.grey[600],
-                            backgroundImage: userImage != null
-                                ? MemoryImage(base64Decode(userImage))
-                                : null,
-                            child: userImage == null
-                                ? Text(
-                                    username[0].toUpperCase(),
-                                    style: const TextStyle(color: Colors.white),
-                                  )
-                                : null,
+                          leading: GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/perfil',
+                                arguments: {
+                                  'userId': data['userId'],
+                                  'userName': username,
+                                },
+                              );
+                            },
+                            child: CircleAvatar(
+                              backgroundColor: Colors.grey[600],
+                              backgroundImage: userImage != null
+                                  ? MemoryImage(base64Decode(userImage))
+                                  : null,
+                              child: userImage == null
+                                  ? Text(
+                                      username[0].toUpperCase(),
+                                      style: const TextStyle(color: Colors.white),
+                                    )
+                                  : null,
+                            ),
                           ),
-                          title: Text(
-                            username,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
+                          title: GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/perfil',
+                                arguments: {
+                                  'userId': data['userId'],
+                                  'userName': username,
+                                },
+                              );
+                            },
+                            child: Text(
+                              username,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
                           subtitle: Text(
@@ -388,10 +428,20 @@ class _FeedPageState extends State<FeedPage> {
         height: 60,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: const [
-            Icon(Icons.home, color: Colors.white, size: 30),
-            SizedBox(width: 40),
-            Icon(Icons.person, color: Colors.white, size: 30),
+          children: [
+            IconButton(
+              icon: const Icon(Icons.home, color: Colors.white, size: 30),
+              onPressed: () {
+                // Ya estamos en home, no hacer nada o refrescar
+              },
+            ),
+            const SizedBox(width: 40),
+            IconButton(
+              icon: const Icon(Icons.person, color: Colors.white, size: 30),
+              onPressed: () {
+                Navigator.pushNamed(context, '/cuenta');
+              },
+            ),
           ],
         ),
       ),
@@ -412,7 +462,7 @@ class _FeedPageState extends State<FeedPage> {
               controller: _searchController,
               style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                hintText: 'Buscar por nombre...',
+                hintText: 'Buscar usuario...',
                 hintStyle: TextStyle(color: Colors.grey[600]),
                 prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
                 suffixIcon: _searchQuery.isNotEmpty
@@ -483,40 +533,53 @@ class _FeedPageState extends State<FeedPage> {
                     final user = users[index - 1].data() as Map<String, dynamic>;
                     final userName = user['name'] ?? 'Usuario';
                     final userImage = user['imageBase64'];
+                    final userId = users[index - 1].id;
                     final firstLetter = userName.isNotEmpty ? userName[0].toUpperCase() : 'U';
 
                     return Padding(
                       padding: const EdgeInsets.only(right: 12),
-                      child: Column(
-                        children: [
-                          Container(
-                            width: 60,
-                            height: 60,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.cyan,
-                                width: 3,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.pushNamed(
+                            context,
+                            '/perfil',
+                            arguments: {
+                              'userId': userId,
+                              'userName': userName,
+                            },
+                          );
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.cyan,
+                                  width: 3,
+                                ),
+                              ),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.grey[700],
+                                backgroundImage: userImage != null
+                                    ? MemoryImage(base64Decode(userImage))
+                                    : null,
+                                child: userImage == null
+                                    ? Text(
+                                        firstLetter,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      )
+                                    : null,
                               ),
                             ),
-                            child: CircleAvatar(
-                              backgroundColor: Colors.grey[700],
-                              backgroundImage: userImage != null
-                                  ? MemoryImage(base64Decode(userImage))
-                                  : null,
-                              child: userImage == null
-                                  ? Text(
-                                      firstLetter,
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -555,7 +618,7 @@ class _FeedPageState extends State<FeedPage> {
                   );
                 }
 
-                // Filtrar posts según búsqueda
+                // Filtrar posts según búsqueda por nombre de usuario
                 final allPosts = snapshot.data!.docs;
                 final filteredPosts = _searchQuery.isEmpty
                     ? allPosts
@@ -570,8 +633,9 @@ class _FeedPageState extends State<FeedPage> {
                     child: Text(
                       _searchQuery.isEmpty 
                           ? "Sin publicaciones"
-                          : "No se encontraron publicaciones de '$_searchQuery'",
+                          : "No se encontraron publicaciones de usuarios con '$_searchQuery'",
                       style: const TextStyle(color: Colors.white70),
+                      textAlign: TextAlign.center,
                     ),
                   );
                 }
@@ -613,43 +677,67 @@ class _FeedPageState extends State<FeedPage> {
                             padding: const EdgeInsets.all(12),
                             child: Row(
                               children: [
-                                CircleAvatar(
-                                  backgroundColor: Colors.grey[300],
-                                  radius: 20,
-                                  backgroundImage: userImage != null
-                                      ? MemoryImage(base64Decode(userImage))
-                                      : null,
-                                  child: userImage == null
-                                      ? Text(
-                                          userName[0].toUpperCase(),
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        )
-                                      : null,
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(
+                                      context,
+                                      '/perfil',
+                                      arguments: {
+                                        'userId': data['userId'],
+                                        'userName': userName,
+                                      },
+                                    );
+                                  },
+                                  child: CircleAvatar(
+                                    backgroundColor: Colors.grey[300],
+                                    radius: 20,
+                                    backgroundImage: userImage != null
+                                        ? MemoryImage(base64Decode(userImage))
+                                        : null,
+                                    child: userImage == null
+                                        ? Text(
+                                            userName[0].toUpperCase(),
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          )
+                                        : null,
+                                  ),
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        userName,
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/perfil',
+                                        arguments: {
+                                          'userId': data['userId'],
+                                          'userName': userName,
+                                        },
+                                      );
+                                    },
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          userName,
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
                                         ),
-                                      ),
-                                      Text(
-                                        'Hace ${_getTimeAgo(data['timestamp'])}',
-                                        style: TextStyle(
-                                          color: Colors.grey[600],
-                                          fontSize: 12,
+                                        Text(
+                                          'Hace ${_getTimeAgo(data['timestamp'])}',
+                                          style: TextStyle(
+                                            color: Colors.grey[600],
+                                            fontSize: 12,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 IconButton(

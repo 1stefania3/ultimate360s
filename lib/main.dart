@@ -12,6 +12,7 @@ import 'screens/feed_screen.dart';
 import 'screens/cuenta.dart';
 import 'screens/miperfil.dart';
 
+
 void main() {
   runApp(const MyApp());
 }
@@ -50,7 +51,8 @@ class MyApp extends StatelessWidget {
               '/welcome': (context) => const WelcomeScreen(), 
               '/feed': (context) => FeedPage(),
               '/cuenta': (context) => const CuentaPage(),
-              '/perfil': (context) => const MiPerfilPage(),
+              '/perfil': (context) => const PerfilPage(),
+            
 
 
             },
