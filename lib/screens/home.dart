@@ -72,7 +72,7 @@ class HomeScreen extends StatelessWidget {
                             label: "Conectar",
                             color: primaryRed,
                             onTap: () {
-                              // 👇 Navega a la pantalla Welcome (Red 360)
+                              // Navega a la pantalla Welcome (Red 360)
                               Navigator.pushNamed(context, '/welcome');
                             },
                           ),
@@ -81,7 +81,8 @@ class HomeScreen extends StatelessWidget {
                             label: "Cuenta",
                             color: primaryGreen,
                             onTap: () {
-                              // Acción cuenta
+                              // Navega a CuentaPage
+                              Navigator.pushNamed(context, '/perfil');
                             },
                           ),
                           _buildHomeButton(

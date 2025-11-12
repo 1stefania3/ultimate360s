@@ -7,8 +7,10 @@ import 'screens/index.dart';
 import 'screens/login.dart';
 import 'screens/register.dart';
 import 'screens/home.dart';
-import 'screens/welcome_screen.dart'; // 👈 NUEVA PANTALLA Red 360
+import 'screens/welcome_screen.dart'; 
 import 'screens/feed_screen.dart';
+import 'screens/cuenta.dart';
+import 'screens/miperfil.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,6 +49,8 @@ class MyApp extends StatelessWidget {
               '/index': (context) => const IndexScreen(),
               '/welcome': (context) => const WelcomeScreen(), 
               '/feed': (context) => FeedPage(),
+              '/cuenta': (context) => const CuentaPage(),
+              '/perfil': (context) => const MiPerfilPage(),
 
 
             },

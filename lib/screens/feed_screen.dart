@@ -24,6 +24,32 @@ class _FeedPageState extends State<FeedPage> {
   final TextEditingController _searchController = TextEditingController();
   bool _isUploading = false;
   String? _imageBase64;
+  String _searchQuery = '';
+  bool _showSearchResults = false;
+  String? _selectedUserId;
+  String? _selectedUserName;
+
+  @override
+  void initState() {
+    super.initState();
+    _searchController.addListener(() {
+      setState(() {
+        _searchQuery = _searchController.text.toLowerCase().trim();
+        _showSearchResults = _searchQuery.isNotEmpty;
+        if (_searchQuery.isEmpty) {
+          _selectedUserId = null;
+          _selectedUserName = null;
+        }
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    _textController.dispose();
+    super.dispose();
+  }
 
   // 📷 Seleccionar imagen
   Future<void> _pickImage() async {
@@ -43,7 +69,9 @@ class _FeedPageState extends State<FeedPage> {
     if (user == null) return;
 
     final userDoc = await _firestore.collection('users').doc(user.uid).get();
-    final username = userDoc.data()?['name'] ?? user.email;
+    final userData = userDoc.data();
+    final username = userData?['name'] ?? user.email;
+    final userImage = userData?['imageBase64'];
 
     if (_textController.text.isEmpty && _imageBase64 == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -55,6 +83,7 @@ class _FeedPageState extends State<FeedPage> {
     await _firestore.collection('posts').add({
       'userId': user.uid,
       'username': username,
+      'userImageBase64': userImage,
       'text': _textController.text.trim(),
       'imageBase64': _imageBase64,
       'likes': [],
@@ -131,14 +160,20 @@ class _FeedPageState extends State<FeedPage> {
                               }
                               final userData = snapshot.data?.data() as Map<String, dynamic>?;
                               final userName = userData?['name'] ?? 'Usuario';
+                              final userImage = userData?['imageBase64'];
                               
                               return ListTile(
                                 leading: CircleAvatar(
                                   backgroundColor: Colors.grey[600],
-                                  child: Text(
-                                    userName[0].toUpperCase(),
-                                    style: const TextStyle(color: Colors.white),
-                                  ),
+                                  backgroundImage: userImage != null
+                                      ? MemoryImage(base64Decode(userImage))
+                                      : null,
+                                  child: userImage == null
+                                      ? Text(
+                                          userName[0].toUpperCase(),
+                                          style: const TextStyle(color: Colors.white),
+                                        )
+                                      : null,
                                 ),
                                 title: Text(
                                   userName,
@@ -231,17 +266,24 @@ class _FeedPageState extends State<FeedPage> {
                         final dateStr = timestamp != null 
                             ? _formatDate(timestamp.toDate())
                             : '';
+                        final userImage = data['userImageBase64'];
+                        final username = data['username'] ?? 'Usuario';
                         
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundColor: Colors.grey[600],
-                            child: Text(
-                              (data['username'] ?? 'U')[0].toUpperCase(),
-                              style: const TextStyle(color: Colors.white),
-                            ),
+                            backgroundImage: userImage != null
+                                ? MemoryImage(base64Decode(userImage))
+                                : null,
+                            child: userImage == null
+                                ? Text(
+                                    username[0].toUpperCase(),
+                                    style: const TextStyle(color: Colors.white),
+                                  )
+                                : null,
                           ),
                           title: Text(
-                            data['username'] ?? 'Usuario',
+                            username,
                             style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
@@ -287,7 +329,9 @@ class _FeedPageState extends State<FeedPage> {
                           .collection('users')
                           .doc(user.uid)
                           .get();
-                      final username = userDoc.data()?['name'] ?? user.email;
+                      final userData = userDoc.data();
+                      final username = userData?['name'] ?? user.email;
+                      final userImage = userData?['imageBase64'];
 
                       if (commentController.text.trim().isEmpty) return;
 
@@ -298,6 +342,7 @@ class _FeedPageState extends State<FeedPage> {
                           .add({
                         'userId': user.uid,
                         'username': username,
+                        'userImageBase64': userImage,
                         'text': commentController.text.trim(),
                         'timestamp': FieldValue.serverTimestamp(),
                       });
@@ -367,9 +412,18 @@ class _FeedPageState extends State<FeedPage> {
               controller: _searchController,
               style: const TextStyle(color: Colors.black),
               decoration: InputDecoration(
-                hintText: 'Search here...',
+                hintText: 'Buscar por nombre...',
                 hintStyle: TextStyle(color: Colors.grey[600]),
                 prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
+                suffixIcon: _searchQuery.isNotEmpty
+                    ? IconButton(
+                        icon: const Icon(Icons.clear, color: Colors.grey),
+                        onPressed: () {
+                          _searchController.clear();
+                          setState(() => _searchQuery = '');
+                        },
+                      )
+                    : null,
                 filled: true,
                 fillColor: Colors.white,
                 border: OutlineInputBorder(
@@ -428,6 +482,7 @@ class _FeedPageState extends State<FeedPage> {
 
                     final user = users[index - 1].data() as Map<String, dynamic>;
                     final userName = user['name'] ?? 'Usuario';
+                    final userImage = user['imageBase64'];
                     final firstLetter = userName.isNotEmpty ? userName[0].toUpperCase() : 'U';
 
                     return Padding(
@@ -446,14 +501,19 @@ class _FeedPageState extends State<FeedPage> {
                             ),
                             child: CircleAvatar(
                               backgroundColor: Colors.grey[700],
-                              child: Text(
-                                firstLetter,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
+                              backgroundImage: userImage != null
+                                  ? MemoryImage(base64Decode(userImage))
+                                  : null,
+                              child: userImage == null
+                                  ? Text(
+                                      firstLetter,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    )
+                                  : null,
                             ),
                           ),
                         ],
@@ -494,25 +554,38 @@ class _FeedPageState extends State<FeedPage> {
                     child: CircularProgressIndicator(color: Colors.cyan),
                   );
                 }
-                final posts = snapshot.data!.docs;
-                if (posts.isEmpty) {
-                  return const Center(
+
+                // Filtrar posts según búsqueda
+                final allPosts = snapshot.data!.docs;
+                final filteredPosts = _searchQuery.isEmpty
+                    ? allPosts
+                    : allPosts.where((post) {
+                        final data = post.data() as Map<String, dynamic>;
+                        final username = (data['username'] ?? '').toString().toLowerCase();
+                        return username.contains(_searchQuery);
+                      }).toList();
+
+                if (filteredPosts.isEmpty) {
+                  return Center(
                     child: Text(
-                      "Sin publicaciones",
-                      style: TextStyle(color: Colors.white70),
+                      _searchQuery.isEmpty 
+                          ? "Sin publicaciones"
+                          : "No se encontraron publicaciones de '$_searchQuery'",
+                      style: const TextStyle(color: Colors.white70),
                     ),
                   );
                 }
 
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: posts.length,
+                  itemCount: filteredPosts.length,
                   itemBuilder: (context, index) {
-                    final data = posts[index].data() as Map<String, dynamic>;
-                    final postId = posts[index].id;
+                    final data = filteredPosts[index].data() as Map<String, dynamic>;
+                    final postId = filteredPosts[index].id;
                     final likes = List<String>.from(data['likes'] ?? []);
                     final isLiked = likes.contains(userId);
                     final userName = data['username'] ?? 'Usuario';
+                    final userImage = data['userImageBase64'];
                     final hasImage = data['imageBase64'] != null;
 
                     return Container(
@@ -543,13 +616,18 @@ class _FeedPageState extends State<FeedPage> {
                                 CircleAvatar(
                                   backgroundColor: Colors.grey[300],
                                   radius: 20,
-                                  child: Text(
-                                    userName[0].toUpperCase(),
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                                  backgroundImage: userImage != null
+                                      ? MemoryImage(base64Decode(userImage))
+                                      : null,
+                                  child: userImage == null
+                                      ? Text(
+                                          userName[0].toUpperCase(),
+                                          style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )
+                                      : null,
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
