@@ -52,7 +52,6 @@ class _CuentaPageState extends State<CuentaPage> {
     _levelController.text = _level!;
   }
 
-  // 📌 Subir imagen y guardar en Firestore como base64
   Future<void> _updateProfileImage() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picked == null) return;
@@ -189,7 +188,11 @@ class _CuentaPageState extends State<CuentaPage> {
                   ElevatedButton.icon(
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
-                      if (context.mounted) Navigator.pop(context);
+                      if (context.mounted) {
+                        // Redirige a IndexScreen y elimina historial de navegación
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/index', (route) => false);
+                      }
                     },
                     icon: const Icon(Icons.logout),
                     label: const Text("Cerrar sesión"),
