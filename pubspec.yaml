@@ -11,6 +11,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_map: ^7.0.0
+  #flutter_svg : ^0.17.4
+
   latlong2: ^0.9.0
 
   cupertino_icons: ^1.0.8
@@ -33,6 +35,8 @@ flutter:
     - lib/assets/logo.png
     - lib/assets/bg.png
     - lib/assets/bg1.png
+    - lib/assets/fondo.png
+    - lib/assets/Amigos.png
 
 fonts:
   - family: Montserrat

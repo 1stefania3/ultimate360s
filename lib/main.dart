@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:ultimate360s/screens/red360Widget.dart';
 import 'firebase_options.dart';
 
 // Importa tus pantallas
@@ -37,14 +38,15 @@ class MyApp extends StatelessWidget {
               fontFamily: 'Montserrat', // Aplica Montserrat en toda la app
             ),
             // Pantalla inicial
-            home: const MapsPage(),
+            home: Red360Widget(),
             // Rutas con nombre
             routes: {
               '/login': (context) => const LoginScreen(),
               '/register': (context) => const RegisterScreen(),
               '/home': (context) => HomeScreen(), // <-- No usar const porque HomeScreen tiene widgets dinámicos
               '/index': (context) => const IndexScreen(),
-              'maps': (context) => const MapsPage(),
+              '/maps': (context) => const MapsPage(),
+              '/red360Widget': (context) => Red360Widget(),
             },
           );
         }
