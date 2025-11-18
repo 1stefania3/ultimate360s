@@ -54,7 +54,7 @@ class MapsPage extends StatelessWidget {
                   ),
                 ],
               ),
-
+/*
               PolygonLayer(
                 polygons: [
                   Polygon(
@@ -79,6 +79,7 @@ class MapsPage extends StatelessWidget {
                   ),
                 ],
               ),
+              */
             ],
           ),
 
@@ -89,9 +90,8 @@ class MapsPage extends StatelessWidget {
   child: Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      // Contenedor gris detrás (barra superior)
       Container(
-        height: 50,
+        height: 100,
         width: double.infinity,
         //padding: const EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
@@ -110,7 +110,6 @@ class MapsPage extends StatelessWidget {
 
       const SizedBox(height: 10),
 
-      // Scroll horizontal con filtros
       SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(

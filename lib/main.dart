@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:ultimate360s/screens/red360Widget.dart';
 import 'firebase_options.dart';
 
 // Importa tus pantallas
@@ -9,6 +8,14 @@ import 'screens/login.dart';
 import 'screens/register.dart';
 import 'screens/home.dart'; // <-- Asegúrate que el archivo exista y la ruta sea correcta
 import 'screens/maps.dart';
+import 'screens/localidades.dart';
+import 'screens/lnorte.dart';
+import 'screens/lsur.dart';
+import 'screens/lcentro.dart';
+import 'screens/loccidente.dart';
+
+
+
 
 void main() {
   runApp(const MyApp());
@@ -38,7 +45,7 @@ class MyApp extends StatelessWidget {
               fontFamily: 'Montserrat', // Aplica Montserrat en toda la app
             ),
             // Pantalla inicial
-            home: Red360Widget(),
+            home: LsurWidget(),
             // Rutas con nombre
             routes: {
               '/login': (context) => const LoginScreen(),
@@ -46,7 +53,11 @@ class MyApp extends StatelessWidget {
               '/home': (context) => HomeScreen(), // <-- No usar const porque HomeScreen tiene widgets dinámicos
               '/index': (context) => const IndexScreen(),
               '/maps': (context) => const MapsPage(),
-              '/red360Widget': (context) => Red360Widget(),
+              '/localidades': (context) => LocalidadesWidget(),
+              '/lnorte': (context) => LnorteWidget(),
+              '/lsur': (context) => LsurWidget(),
+              '/lcentro': (context) => LcentroWidget(),
+              '/loccidente': (context) => LoccidenteWidget(),
             },
           );
         }
