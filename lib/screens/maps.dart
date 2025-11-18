@@ -20,7 +20,6 @@ class MapsPage extends StatelessWidget {
                  userAgentPackageName: 'com.example.app',
               ),
               
-
              MarkerLayer(
                 markers: [
                   Marker(
@@ -83,19 +82,55 @@ class MapsPage extends StatelessWidget {
             ],
           ),
 
-          Positioned(
-            top: 40,
-            left: 10,
-            right: 10,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: const[
-                FilterButton(text: "Tiendas", color: Colors.lightGreen),
-                FilterButton(text: "Canchas", color: Colors.greenAccent),
-                FilterButton(text: "Eventos", color: Colors.orangeAccent),
-              ],
-            ),
+         Positioned(
+  top: 0,
+  left: 0,
+  right: 0,
+  child: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Contenedor gris detrás (barra superior)
+      Container(
+        height: 50,
+        width: double.infinity,
+        //padding: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.grey.withOpacity(0.4),
+        ),
+        alignment: Alignment.center,
+        child: const Text(
+          "¿Dónde estás hoy?",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 0, 0, 0),
           ),
+        ),
+      ),
+
+      const SizedBox(height: 10),
+
+      // Scroll horizontal con filtros
+      SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          children: const [
+            SizedBox(width: 10),
+            FilterButton(text: "Tiendas", color: Colors.lightGreen),
+            SizedBox(width: 10),
+            FilterButton(text: "Canchas", color: Colors.lightGreen),
+            SizedBox(width: 10),
+            FilterButton(text: "Eventos", color: Colors.lightGreen),
+            SizedBox(width: 10),
+            FilterButton(text: "Hoteles", color: Colors.lightGreen),
+            SizedBox(width: 10),
+          ],
+        ),
+      ),
+    ],
+  ),
+),
+
         ],
       ),
     );
@@ -122,4 +157,8 @@ class FilterButton extends StatelessWidget {
       ),
     );
   }
+
+  
+  
+
 }

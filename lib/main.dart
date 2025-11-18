@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
               fontFamily: 'Montserrat', // Aplica Montserrat en toda la app
             ),
             // Pantalla inicial
-            home: const IndexScreen(),
+            home: const MapsPage(),
             // Rutas con nombre
             routes: {
               '/login': (context) => const LoginScreen(),
