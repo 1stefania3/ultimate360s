@@ -6,15 +6,11 @@ import 'firebase_options.dart';
 import 'screens/index.dart';
 import 'screens/login.dart';
 import 'screens/register.dart';
-import 'screens/home.dart'; // <-- Asegúrate que el archivo exista y la ruta sea correcta
-import 'screens/maps.dart';
-import 'screens/localidades.dart';
-import 'screens/lnorte.dart';
-import 'screens/lsur.dart';
-import 'screens/lcentro.dart';
-import 'screens/loccidente.dart';
-
-
+import 'screens/home.dart';
+import 'screens/welcome_screen.dart'; 
+import 'screens/feed_screen.dart';
+import 'screens/cuenta.dart';
+import 'screens/miperfil.dart';
 
 
 void main() {
@@ -44,20 +40,21 @@ class MyApp extends StatelessWidget {
               primarySwatch: Colors.blue,
               fontFamily: 'Montserrat', // Aplica Montserrat en toda la app
             ),
-            // Pantalla inicial
-            home: LsurWidget(),
-            // Rutas con nombre
+            // 👇 Pantalla inicial actual
+            home: const IndexScreen(),
+            // 👇 Rutas con nombre
             routes: {
               '/login': (context) => const LoginScreen(),
               '/register': (context) => const RegisterScreen(),
-              '/home': (context) => HomeScreen(), // <-- No usar const porque HomeScreen tiene widgets dinámicos
+              '/home': (context) => HomeScreen(),
               '/index': (context) => const IndexScreen(),
-              '/maps': (context) => const MapsPage(),
-              '/localidades': (context) => LocalidadesWidget(),
-              '/lnorte': (context) => LnorteWidget(),
-              '/lsur': (context) => LsurWidget(),
-              '/lcentro': (context) => LcentroWidget(),
-              '/loccidente': (context) => LoccidenteWidget(),
+              '/welcome': (context) => const WelcomeScreen(), 
+              '/feed': (context) => FeedPage(),
+              '/cuenta': (context) => const CuentaPage(),
+              '/perfil': (context) => const PerfilPage(),
+            
+
+
             },
           );
         }

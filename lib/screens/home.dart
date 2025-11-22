@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -17,7 +18,6 @@ class HomeScreen extends StatelessWidget {
           // Fondo
           Image.asset('lib/assets/bg1.png', fit: BoxFit.cover),
           Container(color: Colors.black.withOpacity(0.4)), // overlay
-
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -30,7 +30,6 @@ class HomeScreen extends StatelessWidget {
                     onPressed: () => Navigator.pop(context),
                   ),
                   const SizedBox(height: 20),
-
                   // Logo
                   Center(
                     child: Column(
@@ -50,7 +49,6 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 50),
-
                   // Botones
                   Expanded(
                     child: Center(
@@ -72,7 +70,8 @@ class HomeScreen extends StatelessWidget {
                             label: "Conectar",
                             color: primaryRed,
                             onTap: () {
-                              // Acción conectar
+                              // Navega a la pantalla Welcome (Red 360)
+                              Navigator.pushNamed(context, '/welcome');
                             },
                           ),
                           _buildHomeButton(
@@ -80,7 +79,15 @@ class HomeScreen extends StatelessWidget {
                             label: "Cuenta",
                             color: primaryGreen,
                             onTap: () {
-                              // Acción cuenta
+                              final currentUserId =
+                                  FirebaseAuth.instance.currentUser?.uid;
+                              if (currentUserId != null) {
+                                Navigator.pushNamed(
+                                  context,
+                                  '/perfil',
+                                  arguments: {'userId': currentUserId},
+                                );
+                              }
                             },
                           ),
                           _buildHomeButton(

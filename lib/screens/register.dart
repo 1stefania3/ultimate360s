@@ -20,17 +20,28 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   Future<void> registerUser() async {
     try {
+      // 1️⃣ Crear el usuario en Firebase Authentication
       final userCredential = await _auth.createUserWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim(),
       );
 
-      await _firestore.collection('usuarios').doc(userCredential.user!.uid).set({
-        'Nombre': nameController.text.trim(),
-        'Email': emailController.text.trim(),
-        'Nivel': selectedLevel,
+      final uid = userCredential.user!.uid;
+
+      // 2️⃣ Crear su documento en Firestore (colección "users")
+      await _firestore.collection('users').doc(uid).set({
+        'uid': uid,
+        'name': nameController.text.trim(),
+        'email': emailController.text.trim(),
+        'level': selectedLevel,
+        'photoUrl': '', // se actualizará luego si agregas fotos de perfil
+        'followers': [],
+        'following': [],
+        'posts': [],
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
+      // 3️⃣ Mostrar mensaje y redirigir
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Cuenta creada exitosamente')),
       );
@@ -142,7 +153,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         labelStyle: const TextStyle(color: Colors.white70, fontFamily: 'Montserrat'),
         filled: true,
         fillColor: Colors.white.withOpacity(0.1),
-        prefixIcon: Icon(isPassword ? Icons.lock : Icons.person, color: Colors.greenAccent),
+        prefixIcon: Icon(
+          isPassword ? Icons.lock : Icons.person,
+          color: Colors.greenAccent,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide.none,
